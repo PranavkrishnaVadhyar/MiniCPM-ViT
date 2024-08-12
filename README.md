@@ -1,137 +1,124 @@
 ---
 pipeline_tag: visual-question-answering
+language:
+- en
+- zh
 datasets:
-- openbmb/RLAIF-V-Dataset
+- HaoyeZhang/RLHF-V-Dataset
+- Yirany/UniMM-Chat
+- HuggingFaceM4/VQAv2
+- liuhaotian/LLaVA-Instruct-150K
 ---
 
-<h1>A GPT-4V Level MLLM for Single Image, Multi Image and Video on Your Phone</h1>
+[GitHub](https://github.com/OpenBMB/MiniCPM-V) | [Demo](https://huggingface.co/spaces/openbmb/MiniCPM-V-2)
 
-[GitHub](https://github.com/OpenBMB/MiniCPM-V) | [Demo](https://huggingface.co/spaces/openbmb/MiniCPM-V-2_6)</a> 
+## News <!-- omit in toc -->
+* [2024.05.20] 🔥 The GPT-4V level multimodal model [**MiniCPM-Llama3-V 2.5**](https://huggingface.co/openbmb/MiniCPM-Llama3-V-2_5) is out.
+* [2024.04.23] MiniCPM-V 2.0 supports [vLLM](#vllm) now!
+* [2024.04.18] We create a HuggingFace Space to host the demo of MiniCPM-V 2.0 at [here](https://huggingface.co/spaces/openbmb/MiniCPM-V-2)!
+* [2024.04.17] MiniCPM-V 2.0 supports deploying [WebUI Demo](https://github.com/OpenBMB/MiniCPM-V/blob/8a1f766b85595a8095651eed9a44a83a965b305b/README_en.md#minicpm-v-) now!
+* [2024.04.15] MiniCPM-V 2.0 supports [fine-tuning](https://github.com/modelscope/swift/blob/main/docs/source/Multi-Modal/minicpm-v-2最佳实践.md) with the SWIFT framework!
+* [2024.04.12] We open-source MiniCPM-V-2.0, which achieves comparable performance with Gemini Pro in understanding scene text and outperforms strong Qwen-VL-Chat 9.6B and Yi-VL 34B on <a href="https://rank.opencompass.org.cn/leaderboard-multimodal">OpenCompass</a>, a comprehensive evaluation over 11 popular benchmarks. Click <a href="https://openbmb.vercel.app/minicpm-v-2">here</a> to view the MiniCPM-V 2.0 technical blog.
+
+## MiniCPM-V 2.0
 
 
-## MiniCPM-V 2.6
+**MiniCPM-V 2.8B** is a strong multimodal large language model for efficient end-side deployment. The model is built based on SigLip-400M and [MiniCPM-2.4B](https://github.com/OpenBMB/MiniCPM/), connected by a perceiver resampler. Our latest version, **MiniCPM-V 2.0** has several notable features. 
 
-**MiniCPM-V 2.6** is the latest and most capable model in the MiniCPM-V series. The model is built on SigLip-400M and Qwen2-7B with a total of 8B parameters. It exhibits a significant performance improvement over MiniCPM-Llama3-V 2.5, and introduces new features for multi-image and video understanding. Notable features of MiniCPM-V 2.6 include:
+- 🔥 **State-of-the-art Performance.** 
 
-- 🔥 **Leading Performance.**
-  MiniCPM-V 2.6 achieves an average score of 65.2 on the latest version of OpenCompass, a comprehensive evaluation over 8 popular benchmarks. **With only 8B parameters, it surpasses widely used proprietary models like GPT-4o mini, GPT-4V, Gemini 1.5 Pro, and Claude 3.5 Sonnet** for single image understanding.
+  MiniCPM-V 2.0 achieves **state-of-the-art performance** on multiple benchmarks (including OCRBench, TextVQA, MME, MMB, MathVista, etc) among models under 7B parameters. It even **outperforms strong Qwen-VL-Chat 9.6B, CogVLM-Chat 17.4B, and Yi-VL 34B on OpenCompass, a comprehensive evaluation over 11 popular benchmarks**. Notably, MiniCPM-V 2.0 shows **strong OCR capability**, achieving **comparable performance to Gemini Pro in scene-text understanding**, and **state-of-the-art performance on OCRBench** among open-source models.
 
-- 🖼️ **Multi Image Understanding and In-context Learning.** MiniCPM-V 2.6 can also perform **conversation and reasoning over multiple images**. It achieves **state-of-the-art performance** on popular multi-image benchmarks such as Mantis-Eval, BLINK, Mathverse mv and Sciverse mv, and also shows promising in-context learning capability.
+- 🏆 **Trustworthy Behavior.** 
 
-- 🎬 **Video Understanding.** MiniCPM-V 2.6 can also **accept video inputs**, performing conversation and providing dense captions for spatial-temporal information. It outperforms **GPT-4V, Claude 3.5 Sonnet and LLaVA-NeXT-Video-34B** on Video-MME with/without subtitles.
+  LMMs are known for suffering from hallucination, often generating text not factually grounded in images. MiniCPM-V 2.0 is **the first end-side LMM aligned via multimodal RLHF for trustworthy behavior** (using the recent [RLHF-V](https://rlhf-v.github.io/) [CVPR'24] series technique). This allows the model to **match GPT-4V in preventing hallucinations** on Object HalBench.
 
-- 💪 **Strong OCR Capability and Others.**
-  MiniCPM-V 2.6 can process images with any aspect ratio and up to 1.8 million pixels (e.g., 1344x1344). It achieves **state-of-the-art performance on OCRBench, surpassing proprietary models such as GPT-4o, GPT-4V, and Gemini 1.5 Pro**.
-  Based on the the latest [RLAIF-V](https://github.com/RLHF-V/RLAIF-V/) and [VisCPM](https://github.com/OpenBMB/VisCPM) techniques, it features **trustworthy behaviors**, with significantly lower hallucination rates than GPT-4o and GPT-4V on Object HalBench, and supports **multilingual capabilities** on English, Chinese, German, French, Italian, Korean, etc.
+- 🌟 **High-Resolution Images at Any Aspect Raito.**
 
-- 🚀 **Superior Efficiency.**
-  In addition to its friendly size, MiniCPM-V 2.6 also shows **state-of-the-art token density** (i.e., number of pixels encoded into each visual token). **It produces only 640 tokens when processing a 1.8M pixel image, which is 75% fewer than most models**. This directly improves the inference speed, first-token latency, memory usage, and power consumption. As a result, MiniCPM-V 2.6 can efficiently support **real-time video understanding** on end-side devices such as iPad.
+  MiniCPM-V 2.0 can accept **1.8 million pixels (e.g., 1344x1344) images at any aspect ratio**. This enables better perception of fine-grained visual information such as small objects and optical characters, which is achieved via a recent technique from [LLaVA-UHD](https://arxiv.org/pdf/2403.11703.pdf).
 
-- 💫 **Easy Usage.**
-MiniCPM-V 2.6 can be easily used in various ways: (1) [llama.cpp](https://github.com/OpenBMB/llama.cpp/blob/minicpmv-main/examples/llava/README-minicpmv2.6.md) and [ollama](https://github.com/OpenBMB/ollama/tree/minicpm-v2.6) support for efficient CPU inference on local devices, (2) [int4](https://huggingface.co/openbmb/MiniCPM-V-2_6-int4) and [GGUF](https://huggingface.co/openbmb/MiniCPM-V-2_6-gguf) format quantized models in 16 sizes, (3) [vLLM](https://github.com/OpenBMB/MiniCPM-V/tree/main?tab=readme-ov-file#inference-with-vllm) support for high-throughput and memory-efficient inference, (4) fine-tuning on new domains and tasks, (5) quick local WebUI demo setup with [Gradio](https://github.com/OpenBMB/MiniCPM-V/tree/main?tab=readme-ov-file#chat-with-our-demo-on-gradio) and (6) online web [demo](http://120.92.209.146:8887).
+- ⚡️ **High Efficiency.** 
 
-### Evaluation  <!-- omit in toc -->
+  MiniCPM-V 2.0 can be **efficiently deployed on most GPU cards and personal computers**, and **even on end devices such as mobile phones**. For visual encoding, we compress the image representations into much fewer tokens via a perceiver resampler. This allows MiniCPM-V 2.0 to operate with **favorable memory cost and speed during inference even when dealing with high-resolution images**.
+
+
+
+- 🙌 **Bilingual Support.** 
+
+  MiniCPM-V 2.0 **supports strong bilingual multimodal capabilities in both English and Chinese**. This is enabled by generalizing multimodal capabilities across languages, a technique from [VisCPM](https://arxiv.org/abs/2308.12038) [ICLR'24].
+
+## Evaluation <!-- omit in toc -->
+
 <div align="center">
-    <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/radar_final.png" width=66% />
+    <img src=/openbmb/MiniCPM-V-2.0/resolve/main/assets/minicpmv-2-peformance2.png width=100% />
 </div>
-
-Single image results on OpenCompass, MME, MMVet, OCRBench, MMMU, MathVista, MMB, AI2D, TextVQA, DocVQA, HallusionBench, Object HalBench:
+Results on TextVQA, DocVQA, OCRBench, OpenCompass, MME, MMBench, MMMU, MathVista, LLaVA Bench, Object HalBench.
 <div align="center">
-
-![image/png](https://cdn-uploads.huggingface.co/production/uploads/64abc4aa6cadc7aca585dddf/QVl0iPtT5aUhlvViyEpgs.png)
-
+    <img src=/openbmb/MiniCPM-V-2.0/resolve/main/assets/minicpmv-2-benchmark.png width=140% />
 </div>
 
-<sup>*</sup> We evaluate this benchmark using chain-of-thought prompting.
 
-<sup>+</sup> Token Density: number of pixels encoded into each visual token at maximum resolution, i.e., # pixels at maximum resolution / # visual tokens.
+## Examples <!-- omit in toc -->
 
-Note: For proprietary models, we calculate token density based on the image encoding charging strategy defined in the official API documentation, which provides an upper-bound estimation.
+<table align="center">
+    <p align="center">
+      <img src="assets/minicpmv2-cases_2.png" width=95%/>
+    </p>
+</table>
 
+We deploy MiniCPM-V 2.0 on end devices. The demo video is the raw screen recording on a Xiaomi 14 Pro without edition.
 
-<details>
-<summary>Click to view multi-image results on Mantis Eval, BLINK Val, Mathverse mv, Sciverse mv, MIRB.</summary>
-<div align="center">
+<table align="center">
+    <p align="center">
+      <img src="assets/station.gif" width=40% style="display:inline-block;"/>
+      <img src="assets/london_car.gif" width=40% style="display:inline-block;"/>
+    </p>
+</table>
 
-![image/png](https://cdn-uploads.huggingface.co/production/uploads/64abc4aa6cadc7aca585dddf/o6FGHytRhzeatmhxq0Dbi.png)
-
-</div>
-<sup>*</sup> We evaluate the officially released checkpoint by ourselves.
-</details>
-
-<details>
-<summary>Click to view video results on Video-MME and Video-ChatGPT.</summary>
-<div align="center">
-
-![image/png](https://cdn-uploads.huggingface.co/production/uploads/64abc4aa6cadc7aca585dddf/_T1mw5yhqNCqVdYRTQOGu.png)
-
-</div>
-
-</details>
-
-
-<details>
-<summary>Click to view few-shot results on TextVQA, VizWiz, VQAv2, OK-VQA.</summary>
-<div align="center">
-
-
-![image/png](https://cdn-uploads.huggingface.co/production/uploads/64abc4aa6cadc7aca585dddf/zXIuiCTTe-POqKGHszdn0.png)
-
-</div>
-* denotes zero image shot and two additional text shots following Flamingo.
-
-<sup>+</sup> We evaluate the pretraining ckpt without SFT.
-</details>
-
-### Examples <!-- omit in toc -->
-
-<div style="display: flex; flex-direction: column; align-items: center;">
-  <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/minicpmv2_6/multi_img-bike.png" alt="Bike" style="margin-bottom: -20px;">
-  <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/minicpmv2_6/multi_img-menu.png" alt="Menu" style="margin-bottom: -20px;">
-  <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/minicpmv2_6/multi_img-code.png" alt="Code" style="margin-bottom: -20px;">
-  <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/minicpmv2_6/ICL-Mem.png" alt="Mem" style="margin-bottom: -20px;">
-  <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/minicpmv2_6/multiling-medal.png" alt="medal" style="margin-bottom: 10px;">
-</div>
-<details>
-  <summary>Click to view more cases.</summary>
-  <div style="display: flex; flex-direction: column; align-items: center;">
-    <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/minicpmv2_6/ICL-elec.png" alt="elec" style="margin-bottom: -20px;">
-    <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/minicpmv2_6/multiling-olympic.png" alt="Menu" style="margin-bottom: 10px;">
-  </div>
-</details>
-
-We deploy MiniCPM-V 2.6 on end devices. The demo video is the raw screen recording on a iPad Pro without edition.
-
-<div style="display: flex; justify-content: center;">
-    <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/gif_cases/ai.gif" width="48%" style="margin: 0 10px;"/>
-    <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/gif_cases/beer.gif" width="48%" style="margin: 0 10px;"/>
-</div>
-<div style="display: flex; justify-content: center; margin-top: 20px;">
-    <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/gif_cases/ticket.gif" width="48%" style="margin: 0 10px;"/>
-    <img src="https://github.com/OpenBMB/MiniCPM-V/raw/main/assets/gif_cases/wfh.gif" width="48%" style="margin: 0 10px;"/>
-</div>
-
-<div style="text-align: center;">
-<video controls autoplay src="https://cdn-uploads.huggingface.co/production/uploads/64abc4aa6cadc7aca585dddf/mXAEFQFqNd4nnvPk7r5eX.mp4"></video>
-<!-- <video controls autoplay src="https://cdn-uploads.huggingface.co/production/uploads/64abc4aa6cadc7aca585dddf/fEWzfHUdKnpkM7sdmnBQa.mp4"></video> -->
-
-</div>
 
 
 
 ## Demo
-Click here to try the Demo of [MiniCPM-V 2.6](https://huggingface.co/spaces/openbmb/MiniCPM-V-2_6).
+Click here to try out the Demo of [MiniCPM-V 2.0](https://huggingface.co/spaces/openbmb/MiniCPM-V-2).
+
+## Deployment on Mobile Phone
+MiniCPM-V 2.0 can be deployed on mobile phones with Android and Harmony operating systems. 🚀 Try it out [here](https://github.com/OpenBMB/mlc-MiniCPM).
+
+## Inference with vLLM<a id="vllm"></a>
+
+<details>
+<summary>Click to see how to inference with vLLM </summary>
+Because our pull request to vLLM is still waiting for reviewing, we fork this repository to build and test our vLLM demo. Here are the steps:
+
+1. Clone our version of vLLM:
+```shell
+git clone https://github.com/OpenBMB/vllm.git
+```
+2. Install vLLM:
+```shell
+cd vllm
+pip install -e .
+```
+3. Install timm: 
+```shell
+pip install timm=0.9.10
+```
+4. Run our demo:
+```shell
+python examples/minicpmv_example.py 
+```
+</details>
 
 
 ## Usage
-Inference using Huggingface transformers on NVIDIA GPUs. Requirements tested on python 3.10：
+Inference using Huggingface transformers on Nivdia GPUs or Mac with MPS (Apple silicon or AMD GPUs). Requirements tested on python 3.10：
 ```
 Pillow==10.1.0
+timm==0.9.10
 torch==2.1.2
 torchvision==0.16.2
-transformers==4.40.0
+transformers==4.36.0
 sentencepiece==0.1.99
-decord
 ```
 
 ```python
@@ -140,196 +127,82 @@ import torch
 from PIL import Image
 from transformers import AutoModel, AutoTokenizer
 
-model = AutoModel.from_pretrained('openbmb/MiniCPM-V-2_6', trust_remote_code=True,
-    attn_implementation='sdpa', torch_dtype=torch.bfloat16) # sdpa or flash_attention_2, no eager
-model = model.eval().cuda()
-tokenizer = AutoTokenizer.from_pretrained('openbmb/MiniCPM-V-2_6', trust_remote_code=True)
+model = AutoModel.from_pretrained('openbmb/MiniCPM-V-2', trust_remote_code=True, torch_dtype=torch.bfloat16)
+# For Nvidia GPUs support BF16 (like A100, H100, RTX3090)
+model = model.to(device='cuda', dtype=torch.bfloat16)
+# For Nvidia GPUs do NOT support BF16 (like V100, T4, RTX2080)
+#model = model.to(device='cuda', dtype=torch.float16)
+# For Mac with MPS (Apple silicon or AMD GPUs).
+# Run with `PYTORCH_ENABLE_MPS_FALLBACK=1 python test.py`
+#model = model.to(device='mps', dtype=torch.float16)
+
+tokenizer = AutoTokenizer.from_pretrained('openbmb/MiniCPM-V-2', trust_remote_code=True)
+model.eval()
 
 image = Image.open('xx.jpg').convert('RGB')
 question = 'What is in the image?'
-msgs = [{'role': 'user', 'content': [image, question]}]
+msgs = [{'role': 'user', 'content': question}]
 
-res = model.chat(
-    image=None,
+res, context, _ = model.chat(
+    image=image,
     msgs=msgs,
-    tokenizer=tokenizer
-)
-print(res)
-
-## if you want to use streaming, please make sure sampling=True and stream=True
-## the model.chat will return a generator
-res = model.chat(
-    image=None,
-    msgs=msgs,
+    context=None,
     tokenizer=tokenizer,
     sampling=True,
-    stream=True
+    temperature=0.7
 )
-
-generated_text = ""
-for new_text in res:
-    generated_text += new_text
-    print(new_text, flush=True, end='')
+print(res)
 ```
-
-### Chat with multiple images
-<details>
-<summary> Click to show Python code running MiniCPM-V 2.6 with multiple images input. </summary>
-  
-```python
-import torch
-from PIL import Image
-from transformers import AutoModel, AutoTokenizer
-
-model = AutoModel.from_pretrained('openbmb/MiniCPM-V-2_6', trust_remote_code=True,
-    attn_implementation='sdpa', torch_dtype=torch.bfloat16) # sdpa or flash_attention_2, no eager
-model = model.eval().cuda()
-tokenizer = AutoTokenizer.from_pretrained('openbmb/MiniCPM-V-2_6', trust_remote_code=True)
-
-image1 = Image.open('image1.jpg').convert('RGB')
-image2 = Image.open('image2.jpg').convert('RGB')
-question = 'Compare image 1 and image 2, tell me about the differences between image 1 and image 2.'
-
-msgs = [{'role': 'user', 'content': [image1, image2, question]}]
-
-answer = model.chat(
-    image=None,
-    msgs=msgs,
-    tokenizer=tokenizer
-)
-print(answer)
-```
-</details>
-
-### In-context few-shot learning
-<details>
-<summary> Click to view Python code running MiniCPM-V 2.6 with few-shot input. </summary>
-
-```python
-import torch
-from PIL import Image
-from transformers import AutoModel, AutoTokenizer
-
-model = AutoModel.from_pretrained('openbmb/MiniCPM-V-2_6', trust_remote_code=True,
-    attn_implementation='sdpa', torch_dtype=torch.bfloat16) # sdpa or flash_attention_2, no eager
-model = model.eval().cuda()
-tokenizer = AutoTokenizer.from_pretrained('openbmb/MiniCPM-V-2_6', trust_remote_code=True)
-
-question = "production date" 
-image1 = Image.open('example1.jpg').convert('RGB')
-answer1 = "2023.08.04"
-image2 = Image.open('example2.jpg').convert('RGB')
-answer2 = "2007.04.24"
-image_test = Image.open('test.jpg').convert('RGB')
-
-msgs = [
-    {'role': 'user', 'content': [image1, question]}, {'role': 'assistant', 'content': [answer1]},
-    {'role': 'user', 'content': [image2, question]}, {'role': 'assistant', 'content': [answer2]},
-    {'role': 'user', 'content': [image_test, question]}
-]
-
-answer = model.chat(
-    image=None,
-    msgs=msgs,
-    tokenizer=tokenizer
-)
-print(answer)
-```
-</details>
-
-### Chat with video
-<details>
-<summary> Click to view Python code running MiniCPM-V 2.6 with video input. </summary>
-
-```python
-import torch
-from PIL import Image
-from transformers import AutoModel, AutoTokenizer
-from decord import VideoReader, cpu    # pip install decord
-
-model = AutoModel.from_pretrained('openbmb/MiniCPM-V-2_6', trust_remote_code=True,
-    attn_implementation='sdpa', torch_dtype=torch.bfloat16) # sdpa or flash_attention_2, no eager
-model = model.eval().cuda()
-tokenizer = AutoTokenizer.from_pretrained('openbmb/MiniCPM-V-2_6', trust_remote_code=True)
-
-MAX_NUM_FRAMES=64 # if cuda OOM set a smaller number
-
-def encode_video(video_path):
-    def uniform_sample(l, n):
-        gap = len(l) / n
-        idxs = [int(i * gap + gap / 2) for i in range(n)]
-        return [l[i] for i in idxs]
-
-    vr = VideoReader(video_path, ctx=cpu(0))
-    sample_fps = round(vr.get_avg_fps() / 1)  # FPS
-    frame_idx = [i for i in range(0, len(vr), sample_fps)]
-    if len(frame_idx) > MAX_NUM_FRAMES:
-        frame_idx = uniform_sample(frame_idx, MAX_NUM_FRAMES)
-    frames = vr.get_batch(frame_idx).asnumpy()
-    frames = [Image.fromarray(v.astype('uint8')) for v in frames]
-    print('num frames:', len(frames))
-    return frames
-
-video_path="video_test.mp4"
-frames = encode_video(video_path)
-question = "Describe the video"
-msgs = [
-    {'role': 'user', 'content': frames + [question]}, 
-]
-
-# Set decode params for video
-params={}
-params["use_image_id"] = False
-params["max_slice_nums"] = 2 # use 1 if cuda OOM and video resolution >  448*448
-
-answer = model.chat(
-    image=None,
-    msgs=msgs,
-    tokenizer=tokenizer,
-    **params
-)
-print(answer)
-```
-</details>
-
 
 Please look at [GitHub](https://github.com/OpenBMB/MiniCPM-V) for more detail about usage.
 
 
-## Inference with llama.cpp<a id="llamacpp"></a>
-MiniCPM-V 2.6 can run with llama.cpp. See our fork of [llama.cpp](https://github.com/OpenBMB/llama.cpp/tree/minicpm-v2.5/examples/minicpmv) for more detail.
-
-
-## Int4 quantized version
-Download the int4 quantized version for lower GPU memory (7GB) usage:  [MiniCPM-V-2_6-int4](https://huggingface.co/openbmb/MiniCPM-V-2_6-int4).
-
+## MiniCPM-V 1.0 <!-- omit in toc -->
+Please see the info about MiniCPM-V 1.0 [here](https://huggingface.co/openbmb/MiniCPM-V).
 
 ## License
 #### Model License
 * The code in this repo is released under the [Apache-2.0](https://github.com/OpenBMB/MiniCPM/blob/main/LICENSE) License. 
 * The usage of MiniCPM-V series model weights must strictly follow [MiniCPM Model License.md](https://github.com/OpenBMB/MiniCPM/blob/main/MiniCPM%20Model%20License.md).
-* The models and weights of MiniCPM are completely free for academic research. After filling out a ["questionnaire"](https://modelbest.feishu.cn/share/base/form/shrcnpV5ZT9EJ6xYjh3Kx0J6v8g) for registration, MiniCPM-V 2.6 weights are also available for free commercial use.
+* The models and weights of MiniCPM are completely free for academic research. after filling out a ["questionnaire"](https://modelbest.feishu.cn/share/base/form/shrcnpV5ZT9EJ6xYjh3Kx0J6v8g) for registration, are also available for free commercial use.
 
 
 #### Statement
-* As an LMM, MiniCPM-V 2.6 generates contents by learning a large mount of multimodal corpora, but it cannot comprehend, express personal opinions or make value judgement. Anything generated by MiniCPM-V 2.6 does not represent the views and positions of the model developers
-* We will not be liable for any problems arising from the use of the MinCPM-V models, including but not limited to data security issues, risk of public opinion, or any risks and problems arising from the misdirection, misuse, dissemination or misuse of the model.
+* As a LLM, MiniCPM-V 2.0 generates contents by learning a large mount of texts, but it cannot comprehend, express personal opinions or make value judgement. Anything generated by MiniCPM-V 2.0 does not represent the views and positions of the model developers
+* We will not be liable for any problems arising from the use of the MinCPM-V open Source model, including but not limited to data security issues, risk of public opinion, or any risks and problems arising from the misdirection, misuse, dissemination or misuse of the model.
 
-## Key Techniques and Other Multimodal Projects
+## Other Multimodal Projects from Our Team
 
-👏 Welcome to explore key techniques of MiniCPM-V 2.6 and other multimodal projects of our team:
-
-[VisCPM](https://github.com/OpenBMB/VisCPM/tree/main) | [RLHF-V](https://github.com/RLHF-V/RLHF-V) | [LLaVA-UHD](https://github.com/thunlp/LLaVA-UHD)  | [RLAIF-V](https://github.com/RLHF-V/RLAIF-V)
+[VisCPM](https://github.com/OpenBMB/VisCPM/tree/main) | [RLHF-V](https://github.com/RLHF-V/RLHF-V) | [LLaVA-UHD](https://github.com/thunlp/LLaVA-UHD)
 
 ## Citation
 
-If you find our work helpful, please consider citing our papers 📝 and liking this project ❤️！
+If you find our work helpful, please consider citing the following papers
 
 ```bib
-@article{yao2024minicpm,
-  title={MiniCPM-V: A GPT-4V Level MLLM on Your Phone},
-  author={Yao, Yuan and Yu, Tianyu and Zhang, Ao and Wang, Chongyi and Cui, Junbo and Zhu, Hongji and Cai, Tianchi and Li, Haoyu and Zhao, Weilin and He, Zhihui and others},
-  journal={arXiv preprint arXiv:2408.01800},
+@article{yu2023rlhf,
+  title={Rlhf-v: Towards trustworthy mllms via behavior alignment from fine-grained correctional human feedback},
+  author={Yu, Tianyu and Yao, Yuan and Zhang, Haoye and He, Taiwen and Han, Yifeng and Cui, Ganqu and Hu, Jinyi and Liu, Zhiyuan and Zheng, Hai-Tao and Sun, Maosong and others},
+  journal={arXiv preprint arXiv:2312.00849},
+  year={2023}
+}
+@article{viscpm,
+    title={Large Multilingual Models Pivot Zero-Shot Multimodal Learning across Languages}, 
+    author={Jinyi Hu and Yuan Yao and Chongyi Wang and Shan Wang and Yinxu Pan and Qianyu Chen and Tianyu Yu and Hanghao Wu and Yue Zhao and Haoye Zhang and Xu Han and Yankai Lin and Jiao Xue and Dahai Li and Zhiyuan Liu and Maosong Sun},
+    journal={arXiv preprint arXiv:2308.12038},
+    year={2023}
+}
+@article{xu2024llava-uhd,
+  title={{LLaVA-UHD}: an LMM Perceiving Any Aspect Ratio and High-Resolution Images},
+  author={Xu, Ruyi and Yao, Yuan and Guo, Zonghao and Cui, Junbo and Ni, Zanlin and Ge, Chunjiang and Chua, Tat-Seng and Liu, Zhiyuan and Huang, Gao},
+  journal={arXiv preprint arXiv:2403.11703},
   year={2024}
+}
+@article{yao2024minicpmvgpt4vlevelmllm,
+  title={MiniCPM-V: A GPT-4V Level MLLM on Your Phone},
+  author={Yao, Yuan and Yu, Tianyu and Zhang, Ao and Wang, Chongyi and Cui, Junbo and Zhu, Hongji and Cai, Tianchi and Li, Haoyu and Zhao, Weilin and He, Zhihui and Chen, Qianyu and Zhou, Huarong and Zou, Zhensheng and Zhang, Haoye and Hu, Shengding and Zheng, Zhi and Zhou, Jie and Cai, Jie and Han, Xu and Zeng, Guoyang and Li, Dahai and Liu, Zhiyuan and Sun, Maosong},
+  journal={arXiv preprint arXiv:2408.01800},
+  year={2024},
+  url={https://arxiv.org/abs/2408.01800},
 }
 ```
